@@ -1,4 +1,4 @@
-# alibi
+# Alibi
 
 ## Project setup
 ```
