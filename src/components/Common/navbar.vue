@@ -24,6 +24,11 @@
               >個人資訊</router-link
             >
           </b-nav-item>
+          <b-nav-item href="#">
+            <router-link to="/scriptpage" class="text-decoration-none"
+              >Test</router-link
+            >
+          </b-nav-item>
         </b-navbar-nav>
 
         <!-- Right aligned nav items -->
