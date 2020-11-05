@@ -20,11 +20,6 @@
             >
           </b-nav-item>
           <b-nav-item href="#">
-            <router-link to="/memberinfo" class="text-decoration-none"
-              >個人資訊</router-link
-            >
-          </b-nav-item>
-          <b-nav-item href="#">
             <router-link to="/scriptpage" class="text-decoration-none"
               >Test</router-link
             >
@@ -33,7 +28,28 @@
 
         <!-- Right aligned nav items -->
         <b-navbar-nav class="ml-auto">
-          <b-button size="sm" @click="$bvModal.show('login')"> 登入 </b-button>
+
+          <b-button size="sm" @click="$bvModal.show('login')" class="mr-3"> 登入 </b-button>
+
+          <b-navbar-brand class="mr-0">
+            <div class="userImage rounded-circle"></div>
+          </b-navbar-brand>
+
+          <b-nav-item-dropdown right>
+            <!-- Using 'button-content' slot -->
+            <template #button-content>
+              <em>我的資訊</em>
+            </template>
+            <b-dropdown-item>
+              <router-link :to="{ path: '/memberinfo/MyInfomation'}" class="text-decoration-none text-dark">個人資訊</router-link>
+            </b-dropdown-item>
+            <b-dropdown-item>
+              <router-link :to="{ path: '/memberinfo/MyScript'}" class="text-decoration-none text-dark">我的劇本</router-link>
+            </b-dropdown-item>
+            <b-dropdown-item >
+              <router-link :to="{ path: '/memberinfo/CreateScript'}" class="text-decoration-none text-dark">新增劇本</router-link>
+            </b-dropdown-item>
+          </b-nav-item-dropdown>
         </b-navbar-nav>
       </b-collapse>
     </b-navbar>
@@ -113,6 +129,17 @@ export default {
 
       &:hover {
         color: #aaa;
+      }
+    }
+    .navbar-nav{
+      .navbar-brand{
+        .userImage{
+          width: 30px;
+          height: 100%;
+          // background-color: blueviolet;
+          background-image: url("../../../public/MrAlibi.png");
+          background-size: cover;
+        }
       }
     }
   }

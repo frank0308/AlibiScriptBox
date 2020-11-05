@@ -21,13 +21,15 @@ const routes = [
     component: () => import(/* webpackChunkName: "ScriptDetail" */ '../views/ScriptDetail.vue')
   },
   {
-    path: '/MemberInfo',
+    path: '/MemberInfo/:infoPage',
     name: 'MemberInfo',
-    component: () => import(/* webpackChunkName: "MemberInfo" */ '../views/MemberInfo.vue')
+    component: () => import(/* webpackChunkName: "MemberInfo" */ '../views/MemberInfo.vue'),
+    props:true
   }
 ]
 
 const router = new VueRouter({
+  mode:'history',
   routes
 })
 

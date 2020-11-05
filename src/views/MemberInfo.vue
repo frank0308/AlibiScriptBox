@@ -7,9 +7,9 @@
                 <p class="member-name mt-3 mb-0 pb-3 border-bottom">Frank</p>
                 <div class="sidebar-area bg-dark vh-100">
                     <b-list-group flush class="w-100 h-100">
-                        <b-list-group-item variant="dark" href="#"><b-icon icon="file-earmark-person" class="h4 m-0 mr-2"></b-icon>個人資訊</b-list-group-item>
-                        <b-list-group-item variant="dark" @click="informationPage='MyScript'" href="#"><b-icon icon="book-half" class="h4 m-0 mr-2"></b-icon>我的劇本</b-list-group-item>
-                        <b-list-group-item variant="dark" @click="informationPage='CreateScript'" href="#"><b-icon icon="pencil-fill" class="h4 m-0 mr-2"></b-icon>新增劇本</b-list-group-item>
+                        <b-list-group-item variant="dark" @click="routerToMyInfomation" href="#"><b-icon icon="file-earmark-person" class="h4 m-0 mr-2"></b-icon>個人資訊</b-list-group-item>
+                        <b-list-group-item variant="dark" @click="routerToMyScript" href="#"><b-icon icon="book-half" class="h4 m-0 mr-2"></b-icon>我的劇本</b-list-group-item>
+                        <b-list-group-item variant="dark" @click="routerToCreateScript" href="#"><b-icon icon="pencil-fill" class="h4 m-0 mr-2"></b-icon>新增劇本</b-list-group-item>
                     </b-list-group>
                 </div>
             </div>
@@ -24,16 +24,39 @@
 
 import MyScript from "../components/MemberInfo/MyScript.vue"
 import CreateScript from "../components/MemberInfo/CreateScript.vue"
+import MyInfomation from "../components/MemberInfo/MyInfomation.vue"
 
 export default {
+
+// @ is an alias to /src
+
+    props:["infoPage"],
     data(){
         return{
-            informationPage:"MyScript"
+            informationPage:this.infoPage
+        }
+    },
+    methods:{
+        routerToMyInfomation(){
+            
+        this.$router.push({path : '/memberinfo/MyInfomation'})
+
+        },
+        routerToMyScript(){
+            
+        this.$router.push({path : '/memberinfo/MyScript'})
+            
+        },
+        routerToCreateScript(){
+            
+        this.$router.push({path : '/memberinfo/CreateScript'})
+
         }
     },
     components:{
         MyScript,
-        CreateScript
+        CreateScript,
+        MyInfomation
     },
 }
 </script>
@@ -42,7 +65,8 @@ export default {
 .avatar-area{
     width: 200px;
     height: 200px;
-    background-image: url("https://i.imgur.com/ZM5EvHg.png");
+    /* background-image: url("https://i.imgur.com/kioNyff.png"); */
+    background-image: url("../../public/MrAlibi.png");
     background-size: cover;
 
 }

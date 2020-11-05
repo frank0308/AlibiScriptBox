@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <Navbar />
-    <router-view/>
+    <router-view :key="key"/>
   </div>
 </template>
 
@@ -12,6 +12,11 @@ import Navbar from "./components/Common/navbar.vue";
 
 
 export default {
+  computed:{
+    key: function(){
+      return this.$route.name?this.$route.name + new Date() : this.$route.name + new Date()
+    }
+  },
   components:{
     Navbar
   }

@@ -28,9 +28,6 @@
 </script>
 
 <style scope>
-b-card-header{
-  /* border-color: white; */
-}
 .card-header{
   padding: 0 20px;
 }
