@@ -33,7 +33,7 @@ export default {
 };
 </script>
 
-<style>
+<style scope>
 .title {
     border-bottom: 2px solid #ccc;
 }
