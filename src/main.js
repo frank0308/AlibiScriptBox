@@ -16,6 +16,23 @@ Vue.use(axios)
 
 Vue.config.productionTip = false
 
+router.beforeEach((to, from, next) => {
+  let flag = localStorage.getItem('Flag');
+  if(flag == 'isLogin'){    
+    if(to.meta.isLogin != null && !to.meta.isLogin){
+      next({path:'/'})
+    } else{  
+      next();
+    }
+  } else {
+    if(to.meta.isLogin){
+      next({path:'/login'});
+    } else {
+      next()
+    }
+  }
+})
+
 new Vue({
   router,
   store,

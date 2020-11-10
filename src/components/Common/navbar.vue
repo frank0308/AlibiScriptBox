@@ -29,17 +29,22 @@
         <!-- Right aligned nav items -->
         <b-navbar-nav class="ml-auto">
 
-          <b-button size="sm" @click="$bvModal.show('login')" class="mr-3"> 登入 </b-button>
+          <b-button size="sm" :to="{path: '/login'}" class="mr-3" v-show="!isLogin"> 登入 </b-button>
 
-          <b-navbar-brand class="mr-0">
+          <b-navbar-brand class="mr-0" v-show="isLogin">
             <div class="userImage rounded-circle"></div>
           </b-navbar-brand>
 
-          <b-nav-item-dropdown right>
+          <b-nav-item-dropdown right v-show="isLogin">
             <!-- Using 'button-content' slot -->
             <template #button-content>
               <em>我的資訊</em>
             </template>
+
+            <b-dropdown-header id="dropdown-header-label">
+              {{this.$store.state.auth.user.Name}}
+            </b-dropdown-header>
+
             <b-dropdown-item>
               <router-link :to="{ path: '/memberinfo/MyInfomation'}" class="text-decoration-none text-dark">個人資訊</router-link>
             </b-dropdown-item>
@@ -49,70 +54,42 @@
             <b-dropdown-item >
               <router-link :to="{ path: '/memberinfo/CreateScript'}" class="text-decoration-none text-dark">新增劇本</router-link>
             </b-dropdown-item>
+            <b-dropdown-item @click="logout">登出</b-dropdown-item>
           </b-nav-item-dropdown>
         </b-navbar-nav>
       </b-collapse>
     </b-navbar>
 
-    <!-- Login Modal -->
-    <b-modal
-      centered
-      id="login"
-      title="登入"
-      ok-title="確定"
-      ok-variant="success"
-      header-bg-variant="dark"
-      header-text-variant="white"
-      cancel-title="取消"
-      @ok="onSubmit"
-    >
-      <b-form ref="form" :inline="true" class="d-flex justify-content-center">
-        <b-form-group
-          id="account"
-          label="帳號 : "
-          label-for="account"
-          class="mb-3"
-        >
-          <b-form-input
-            id="account"
-            v-model="login.Account"
-            type="text"
-            required
-            class="ml-3"
-          ></b-form-input>
-        </b-form-group>
-        <b-form-group id="password" label="密碼 : " label-for="password">
-          <b-form-input
-            id="password"
-            v-model="login.Password"
-            type="text"
-            required
-            class="ml-3"
-          ></b-form-input>
-        </b-form-group>
-      </b-form>
-    </b-modal>
   </div>
 </template>
 
 <script>
 export default {
+  mounted(){
+    let avatar = document.querySelector('.navbar-nav .navbar-brand .userImage');
+    avatar.style.backgroundImage = `url(${this.$store.state.auth.user.Image})`
+  },
   data() {
     return {
-      login: {
-        Account: "123",
-        Password: "456",
-      },
+      isLogin:this.$store.state.auth.isLogin
     };
   },
+  computed:{
+
+  },
   methods: {
-    onSubmit(event) {
+    onSubmit:function(event) {
       event.preventDefault();
       console.log(JSON.stringify(this.login));
       this.$nextTick(() => {
         this.$bvModal.hide("login");
       });
     },
+    logout:function(){
+      localStorage.removeItem('Flag');
+      localStorage.removeItem('vuex');
+      this.$router.go(this.$router.currentRoute.path)
+    }
   },
 };
 </script>
@@ -140,6 +117,10 @@ export default {
           background-image: url("../../../public/MrAlibi.png");
           background-size: cover;
         }
+      }
+
+      #dropdown-header-label{
+        font-size: 18px;
       }
     }
   }

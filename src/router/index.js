@@ -8,28 +8,51 @@ const routes = [
   {
     path: '/',
     name: 'Home',
-    component: Home
+    component: Home,
+    meta:{
+      isLogin:null
+    }
   },
   {
     path: '/SignUp',
     name: 'SignUp',
-    component: () => import(/* webpackChunkName: "SignUp" */ '../views/SignUpPage.vue')
+    component: () => import(/* webpackChunkName: "SignUp" */ '../views/SignUpPage.vue'),
+    meta:{
+      isLogin:false
+    }
+  },
+  {
+    path: '/Login',
+    name: 'Login',
+    component: () => import(/* webpackChunkName: "Login" */ '../views/LoginPage.vue'),
+    meta:{
+      isLogin:false
+    }
   },
   {
     path: '/ScriptPage',
     name: 'ScriptPage',
-    component: () => import(/* webpackChunkName: "ScriptPage" */ '../views/ScriptPage.vue')
+    component: () => import(/* webpackChunkName: "ScriptPage" */ '../views/ScriptPage.vue'),
+    meta:{
+      isLogin:null
+    }
   },
   {
     path: '/ScriptDetail',
     name: 'ScriptDetail',
-    component: () => import(/* webpackChunkName: "ScriptDetail" */ '../views/ScriptDetail.vue')
+    component: () => import(/* webpackChunkName: "ScriptDetail" */ '../views/ScriptDetail.vue'),
+    meta:{
+      isLogin:null
+    }
   },
   {
     path: '/MemberInfo/:infoPage',
     name: 'MemberInfo',
     component: () => import(/* webpackChunkName: "MemberInfo" */ '../views/MemberInfo.vue'),
-    props:true
+    props:true,
+    meta:{
+      isLogin:true
+    }
   }
 ]
 
