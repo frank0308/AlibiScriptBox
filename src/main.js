@@ -8,11 +8,15 @@ import { BootstrapVue, BootstrapVueIcons } from 'bootstrap-vue'
 import store from './store'
 import axios from 'axios'
 import VueSweetalert2 from 'vue-sweetalert2';
+import {Upload, Button} from 'element-ui'
+import 'element-ui/lib/theme-chalk/index.css';
 
 Vue.use(VueSweetalert2);
 Vue.use(BootstrapVue)
 Vue.use(BootstrapVueIcons)
 Vue.use(axios)
+Vue.use(Upload)
+Vue.use(Button)
 
 Vue.config.productionTip = false
 

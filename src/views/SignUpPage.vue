@@ -56,7 +56,7 @@
                             </b-form-group>
                     </div>
                     <div class="w-100 py-3 text-right">
-                        <b-button type="submit" variant="success" class="text-right">Submit</b-button>
+                        <b-button type="submit" variant="success" class="text-right">註冊</b-button>
                     </div>
                 </div>
             </b-form>

@@ -46,13 +46,13 @@
             </b-dropdown-header>
 
             <b-dropdown-item>
-              <router-link :to="{ path: '/memberinfo/MyInfomation'}" class="text-decoration-none text-dark">個人資訊</router-link>
+              <router-link :to="{ path: '/MemberInfo/MyInfomation'}" class="text-decoration-none text-dark">個人資訊</router-link>
             </b-dropdown-item>
             <b-dropdown-item>
-              <router-link :to="{ path: '/memberinfo/MyScript'}" class="text-decoration-none text-dark">我的劇本</router-link>
+              <router-link :to="{ path: '/MemberInfo/MyScript'}" class="text-decoration-none text-dark">我的劇本</router-link>
             </b-dropdown-item>
             <b-dropdown-item >
-              <router-link :to="{ path: '/memberinfo/CreateScript'}" class="text-decoration-none text-dark">新增劇本</router-link>
+              <router-link :to="{ path: '/MemberInfo/CreateScript'}" class="text-decoration-none text-dark">新增劇本</router-link>
             </b-dropdown-item>
             <b-dropdown-item @click="logout">登出</b-dropdown-item>
           </b-nav-item-dropdown>

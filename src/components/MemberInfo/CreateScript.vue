@@ -13,9 +13,12 @@
               id="script-name"
               type="text"
               v-model="script.Name"
-              required
+              :state="formCheck.IsValidName"
             >
             </b-form-input>
+            <b-form-invalid-feedback :state="formCheck.IsValidName">
+              劇本名稱不得為空
+            </b-form-invalid-feedback>
           </b-form-group>
         </div>
 
@@ -30,9 +33,27 @@
               v-model="script.Intro"
               rows="4"
               max-rows="8"
-              required
+              :state="formCheck.IsValidIntro"
             ></b-form-textarea>
+            <b-form-invalid-feedback :state="formCheck.IsValidIntro">
+              劇本簡介字數不得 小於10字 或者 大於400字
+            </b-form-invalid-feedback>
           </b-form-group>
+        </div>
+        <div class="w-100">
+          <div>圖片介紹 :</div>
+          <b-button size="sm" id="show-btn" @click="$bvModal.show('image-modal')">上傳圖片</b-button>
+          <el-upload
+            class="preview-image"
+            action="#"
+            :on-preview="handlePreview"
+            :on-remove="handleRemoveForImages"
+            :file-list="this.script.Images"
+            :auto-upload="false"
+            list-type="picture">
+            <!-- <el-button size="small" type="info">上傳圖片</el-button> -->
+            <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
+          </el-upload>
         </div>
 
         <div class="w-100">
@@ -64,9 +85,12 @@
               id="script-person"
               type="number"
               v-model="script.PlayerNum"
-              required
+              :state="formCheck.IsValidPlayerNum"
             >
             </b-form-input>
+            <b-form-invalid-feedback :state="formCheck.IsValidPlayerNum">
+              劇本人數不得為空
+            </b-form-invalid-feedback>
           </b-form-group>
         </div>
 
@@ -80,9 +104,12 @@
               id="script-time"
               type="number"
               v-model="script.Time"
-              required
+              :state="formCheck.IsValidTime"
             >
             </b-form-input>
+            <b-form-invalid-feedback :state="formCheck.IsValidTime">
+              劇本時長不得為空
+            </b-form-invalid-feedback>
           </b-form-group>
         </div>
 
@@ -102,6 +129,20 @@
 
         <div class="w-50">
           <b-form-group
+            id="script-category-group"
+            label="劇本類別 :"
+            label-for="script-category"
+          >
+            <b-form-select
+              v-model="script.Category"
+              :options="CategoryOptions"
+              required
+            ></b-form-select>
+          </b-form-group>
+        </div>
+
+        <div class="w-50">
+          <b-form-group
             id="script-price-group"
             label="價格 :"
             label-for="script-price"
@@ -110,7 +151,7 @@
               id="script-price"
               type="number"
               v-model="script.Price"
-              required
+              :state="formCheck.IsValidPrice"
             ></b-form-input>
             <b-form-checkbox
               id="script-isPlace"
@@ -122,6 +163,9 @@
             >
               包含場地費
             </b-form-checkbox>
+            <b-form-invalid-feedback :state="formCheck.IsValidPrice">
+              劇本價格不得為空
+            </b-form-invalid-feedback>
           </b-form-group>
         </div>
 
@@ -135,27 +179,18 @@
               id="script-gameMaster"
               type="text"
               v-model="script.GameMaster"
-              required
+              :state="formCheck.IsValidGameMaster"
             >
             </b-form-input>
+            <b-form-invalid-feedback :state="formCheck.IsValidGameMaster">
+              GM不得為空
+            </b-form-invalid-feedback>
           </b-form-group>
         </div>
 
-        <div class="w-50">
-          <b-form-group
-            id="script-tags-group"
-            label="添加標籤 :"
-            label-for="script-tag"
-          >
-            <b-input-group>
-              <b-form-input id="script-tag" type="text"></b-form-input>
-
-              <b-input-group-append>
-                <b-button variant="secondary" @click="addTag">確認</b-button>
-              </b-input-group-append>
-            </b-input-group>
-          </b-form-group>
-          <p class="d-inline">現有標籤 : {{previewTags}}</p>
+        <div class="w-50 mb-5">
+          <label for="tags">新增標籤 :</label>
+          <b-form-tags input-id="tags" v-model="script.Tags" placeholder="" :limit="5"></b-form-tags>
         </div>
 
         <div class="text-right">
@@ -203,18 +238,81 @@
               required
           ></b-form-textarea>
           <b-form-invalid-feedback :state="IsValidCharacterIntro">
-            角色簡介長度不得小於10
+            角色簡介長度不得小於0
           </b-form-invalid-feedback>
         </b-form-group>
         <b-form-group id="character-image" label="角色頭像 : 敬請期待" label-for="character-image">
         </b-form-group>
       </b-form>
     </b-modal>
+
+  <!-- Image Modal -->
+  <b-modal id="image-modal" hide-footer hide-header>
+    <b-overlay :show="isUploadingImage">
+      <div class="d-block">
+        <el-upload
+          class="upload-image"
+          ref="upload"
+          action="#"
+          :on-preview="handlePreview"
+          :on-exceed="handleExceed"
+          :before-upload="beforeUpload"
+          :http-request="handleUpload"
+          :file-list="fileList"
+          :multiple="true"
+          :auto-upload="false"
+          :limit="3"
+          list-type="picture">
+          <el-button size="small" type="info">選擇圖片</el-button>
+          <div slot="tip" class="el-upload__tip">單次上傳以三張為限，多圖可多次上傳，格式僅接受jpg/jpeg/png，且大小不超過500KB</div>
+        </el-upload>
+      </div>
+      <b-button class="mt-3" block @click="submitImage" variant="success">確認上傳</b-button>
+      <b-button class="mt-3" block @click="setImageOrder" variant="info">下一步</b-button>
+      <b-button class="mt-3" block @click="$bvModal.hide('image-modal')">取消</b-button>
+    </b-overlay>
+  </b-modal>
+
+  <!-- Order Modal -->
+  <b-modal id="order-modal" hide-footer hide-header>
+    <p class="text-danger">設定圖片顯示順序，由小至大排列，如設置為 1 則為封面圖</p>
+    <div class="d-flex flex-wrap border">
+      <div class="col-9 p-0">
+        <p class="text-center border-right py-2 m-0">預覽圖片</p>
+      </div>
+      <div class="col-3 p-0">
+        <p class="text-center py-2 m-0">排序</p>
+      </div>
+    </div>
+    <div v-for="(image, index) in this.fileList" :key="index" class="d-flex flex-wrap border border-top-0">
+      <div class="col-9 p-0 border-right">
+        <div class="image-area py-2">
+          <div class="image mx-auto h-100" :style="{ backgroundImage: 'url(' + image.url + ')' }"></div>
+        </div>
+      </div>
+      <div class="col-3 p-0">
+        <div class="order-area h-100 d-flex justify-content-center align-items-center">
+          <b-form-input class="w-50" id="order-number" v-model="image.orderNum" type="number" min="1"></b-form-input>
+        </div>
+      </div>
+    </div>
+    <b-button class="mt-3" block @click="uploadImageComplete" variant="success">完成</b-button>
+    <b-button class="mt-3" block @click="$bvModal.hide('order-modal')">取消</b-button>
+  </b-modal>
+
   </div>
 </template>
 
+
 <script>
+
+import axiosInstance from '../../helpers/https'
+import axios from 'axios'
+
 export default {
+  // created(){
+  //   let vm = this;
+  // },
   data() {
     return {
       DifficultyOptions:[
@@ -224,12 +322,20 @@ export default {
           { value: 4, text: "困難" },
           { value: 5, text: "地獄" },
       ],
+      CategoryOptions:[
+          { value: 1, text: "硬核" },
+          { value: 2, text: "歡樂" },
+          { value: 3, text: "情感" },
+          { value: 4, text: "機制" },
+          { value: 5, text: "恐怖" },
+      ],
       script: {
         Name: "",
         Images: [],
         Characters: [{Name:"王美美", Intro:"超級機掰人"},{Name:"王美美", Intro:"超級機掰人"},],
         Intro: "",
         Difficulty:3,
+        Category:1,
         PlayerNum: null,
         Time: null,
         Price: null,
@@ -241,7 +347,17 @@ export default {
       newCharacterInfo:{
         Name:"",
         Intro:"",
-      }
+      },
+      formCheck:{
+        IsValidName:null,
+        IsValidIntro:null,
+        IsValidPlayerNum:null,
+        IsValidPrice:null,
+        IsValidTime:null,
+        IsValidGameMaster:null,
+      },
+      isUploadingImage:false,
+      fileList: [],
     };
   },
   computed:{
@@ -261,13 +377,29 @@ export default {
   methods:{
     onSubmit: function(event){
       event.preventDefault();
-      console.log(JSON.stringify(this.script));
-    },
-    addTag: function(){
-      if(document.getElementById('script-tag').value.length > 0){
-        this.script.Tags.push(document.getElementById('script-tag').value);
+      this.formCheck.IsValidName = this.script.Name.length > 0;
+      this.formCheck.IsValidIntro = this.script.Intro.length > 0 && this.script.Intro.length < 400;
+      this.formCheck.IsValidPlayerNum = this.script.PlayerNum != null;
+      this.formCheck.IsValidPrice = this.script.Price != null;
+      this.formCheck.IsValidTime = this.script.Time != null;
+      this.formCheck.IsValidGameMaster = this.script.GameMaster.length > 0;
+      if(this.formCheck.IsValidName && this.formCheck.IsValidIntro && this.formCheck.IsValidPlayerNum && this.formCheck.IsValidPrice
+      && this.formCheck.IsValidTime && this.formCheck.IsValidGameMaster){        
+        console.log(this.script)
+        axiosInstance('post', '/Script', this.script)
+        .then((response) => {
+          console.log(response)
+          this.$swal({
+            title: '劇本資訊創建成功',
+            icon: 'success',
+            showConfirmButton: true,
+            confirmButtonColor: '#3085d6',
+            confirmButtonText: '確認'
+            }).then(() => {
+              this.$router.push({ path: '/MemberInfo/MyScript'});
+            })
+        })
       }
-      document.getElementById('script-tag').value = "";
     },
     createCharacter: function(e){
       e.preventDefault();
@@ -286,12 +418,84 @@ export default {
     },
     deleteCharacter: function(index){
       this.script.Characters.splice(index, 1);
+    },
+    setImageOrder:function(){
+      this.$bvModal.hide('image-modal');
+      this.$bvModal.show('order-modal');
+    },
+    uploadImageComplete:function(){
+      this.script.Images = this.fileList;
+      this.$bvModal.hide('order-modal');
+      this.fileList = [];
+    },
+    handleRemove(file, fileList) {
+      this.fileList = fileList;
+    },
+    handleRemoveForImages(file, fileList) {
+      this.script.Images = fileList;
+    },
+    handlePreview(file) {
+      console.log(file);
+    },
+    handleExceed() {
+      this.$swal({
+        title: '單次上傳圖片不得超過3張',
+        icon: 'warning',
+        showConfirmButton: true
+      })
+    },
+    beforeUpload(){
+      this.isUploadingImage = true;
+    },
+    handleUpload:function(response){
+      let vm = this;
+      console.log(response)
+      let reader = new FileReader();
+      reader.readAsDataURL(response.file);
+      reader.onload = function (e) {
+        let imgData = e.target.result.slice(e.target.result.indexOf(',') + 1);
+        let form = new FormData();
+        form.append("image", imgData);
+        form.append('type', 'base64')
+
+        axios({
+            "url": "https://api.imgur.com/3/image",
+            "method": "POST",
+            "timeout": 0,
+            "headers": {
+                "Authorization": "Client-ID 613256f2146a430"
+            },
+            "processData": false,
+            "mimeType": "multipart/form-data",
+            "contentType": false,
+            "data": form
+        }).then(function(response){
+            let obj = {
+              name : "上傳成功",
+              url : response.data.data.link,
+              orderNum : null
+            };
+            vm.fileList.push(obj);
+            vm.isUploadingImage = false;
+        }).catch(function(response){
+          console.log(response)
+          vm.$swal({
+            title: '糟糕！圖片上傳好像出了點問題，再試一次吧',
+            icon: 'error',
+            showConfirmButton: true
+          });
+        })
+      }
+    },
+    submitImage:function(){
+      this.$refs.upload.submit();
     }
   }
 };
 </script>
 
 <style scope>
+
 .title {
   border-bottom: 2px solid #ccc;
 }
@@ -306,5 +510,27 @@ export default {
 }
 .character-intro p{
   font-size: 14px;
+}
+.preview-image .el-upload{
+  display:none
+}
+.el-button{
+  background-color: #6c757d!important;
+  font-size: 14px;
+  padding: 7px 9px!important;
+}
+#order-modal p{
+  font-size:14px;
+}
+#order-modal .image-area{
+  height: 150px;
+}
+#order-modal .image-area .image{
+  width: 30%;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+}
+.tags .badge{
+  font-size: 18px;
 }
 </style>

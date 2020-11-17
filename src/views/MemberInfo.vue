@@ -1,11 +1,11 @@
 <template>
     <b-container>
         <b-row class="bg-light mt-3 rounded">
-            <div class="col-3 bg-dark p-0 rounded-left text-white h-100">
+            <div class="col-3 bg-dark p-0 rounded-left text-white">
                 <div class="avatar-area mx-auto mt-4 rounded-circle bg-light">
                 </div>
-                <p class="member-name mt-3 mb-0 pb-3 border-bottom">Frank</p>
-                <div class="sidebar-area bg-dark vh-100">
+                <p class="member-name mt-3 mb-0 pb-3 border-bottom">{{this.$store.state.auth.user.Name}}</p>
+                <div class="sidebar-area bg-dark">
                     <b-list-group flush class="w-100 h-100">
                         <b-list-group-item variant="dark" @click="routerToMyInfomation" href="#"><b-icon icon="file-earmark-person" class="h4 m-0 mr-2"></b-icon>個人資訊</b-list-group-item>
                         <b-list-group-item variant="dark" @click="routerToMyScript" href="#"><b-icon icon="book-half" class="h4 m-0 mr-2"></b-icon>我的劇本</b-list-group-item>
@@ -29,7 +29,9 @@ import MyInfomation from "../components/MemberInfo/MyInfomation.vue"
 export default {
 
 // @ is an alias to /src
-
+    mounted(){
+        document.querySelector('.avatar-area').style.backgroundImage = `url(${this.$store.state.auth.user.Image})`;
+    },
     props:["infoPage"],
     data(){
         return{
@@ -62,11 +64,14 @@ export default {
 </script>
 
 <style scope>
+.sidebar-area{
+    height: inherit;
+}
 .avatar-area{
     width: 200px;
     height: 200px;
-    /* background-image: url("https://i.imgur.com/kioNyff.png"); */
-    background-image: url("../../public/MrAlibi.png");
+    background-image: url("https://i.imgur.com/kioNyff.png");
+    /* background-image: url("../../public/MrAlibi.png"); */
     background-size: cover;
 
 }
